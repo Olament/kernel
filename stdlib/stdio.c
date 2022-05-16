@@ -17,7 +17,7 @@ void print_s(const char *str) {
 }
 
 // only support up to Hexadecimal
-char radix_digit_map(uint8_t radix) { return radix <= 9 ? '0' + radix : 'a' + (radix - 10); }
+char radix_map(uint8_t radix) { return radix <= 9 ? '0' + radix : 'a' + (radix - 10); }
 
 // print number respect to its radix
 void print_r(uint64_t value, uint8_t radix) {
@@ -34,7 +34,7 @@ void print_r(uint64_t value, uint8_t radix) {
     }
 
     while (n > 0) {
-        print_c(radix_digit_map(value / n));
+        print_c(radix_map(value / n));
         value %= n;
         n /= radix;
     }
