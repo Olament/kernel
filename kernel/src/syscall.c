@@ -60,11 +60,11 @@ intptr_t sys_mmap(void *addr, size_t length, int prot, int flags, int fd, off_t 
     return start;
 }
 
-int sys_exec(const char *file_name, char *const argv[]) {
+int sys_exec(const char *file_name, const char *arg) {
     for (uint64_t i = 0; i < modules->module_count; i++) {
         struct stivale2_module module = modules->modules[i];
         if (strcmp(module.string, file_name) == 0) {
-            exec_module(module);
+            exec_module(module, arg);
             return 0;
         }
     }
@@ -75,7 +75,7 @@ int sys_exit(int status) {
     for (uint64_t i = 0; i < modules->module_count; i++) {
         struct stivale2_module module = modules->modules[i];
         if (strcmp(module.string, "init") == 0) {
-            exec_module(module);
+            exec_module(module, NULL);
             return 0;
         }
     }

@@ -87,7 +87,7 @@ void _start(struct stivale2_struct *hdr) {
         struct stivale2_module module = modules->modules[i];
         debugf("module: %s\n", module.string);
         if (strcmp(module.string, "init") == 0) {
-            exec_module(module);
+            exec_module(module, NULL);
         }
     }
 

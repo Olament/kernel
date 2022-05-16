@@ -11,7 +11,7 @@ ssize_t write(int fd, const void *buf, size_t count);
 ssize_t read(int fd, void *buf, size_t count);
 
 // execute submodule with file_name
-int exec(const char *file_name, char *const argv[]);
+int exec(const char *file_name, const char *argv);
 
 // execute init submodule
 int exit(int status);

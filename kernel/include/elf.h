@@ -22,4 +22,4 @@ void_function_t load(uintptr_t p, size_t size);
  *
  * @param module the stivale2 submodule
  */
-void exec_module(struct stivale2_module module);
+void exec_module(struct stivale2_module module, const char *argument);

@@ -101,7 +101,14 @@ void_function_t load(uintptr_t p, size_t size) {
     return header->e_entry;
 }
 
-void exec_module(struct stivale2_module module) {
+void exec_module(struct stivale2_module module, const char *argument) {
+    // save argument before we unmap lower half
+    char arg[512];
+    if (argument != NULL) {
+        memcpy(arg, argument, strlen(argument) + 1);
+    }
+
+    // unmap lower half
     unmap_lower_half(read_cr3());
     void_function_t entry = load(module.begin, module.end - module.begin);
 
@@ -115,10 +122,23 @@ void exec_module(struct stivale2_module module) {
         vm_map(read_cr3() & 0xFFFFFFFFFFFFF000, p, true, true, false);
     }
 
+    // Map shell command to arbitrary location
+    uintptr_t copied_argument = 0x60000000000;
+    vm_map(read_cr3() & 0xFFFFFFFFFFFFF000, copied_argument, true, true, false);
+
+    // copy argument over
+    char *strp = copied_argument;
+    if (argument != NULL) {
+        memcpy(strp, arg, strlen(arg) + 1);
+    } else {
+        *strp = '\0';
+    }
+
     // And now jump to the entry point
     usermode_entry(
         USER_DATA_SELECTOR | 0x3,          // User data selector with priv=3
         user_stack + user_stack_size - 8,  // Stack starts at the high address minus 8 bytes
         USER_CODE_SELECTOR | 0x3,          // User code selector with priv=3
-        entry);                            // Jump to the entry point}
+        entry,                             // Jump to the entry point
+        copied_argument);
 }
